@@ -30,12 +30,14 @@ class Encryption:
         return encrypted
         
     def decrypt(self, theData, password=None):
-        #Test if a password was provided otherwise use the one defined by the encryption class
-        if password == None or password == "": passThing = Encryption.password
-        else: passThing = password
-        
-        decrypted = gpg.decrypt(message=str(theData), passphrase=passThing)
-        return str(decrypted), decrypted.ok, decrypted.status
+        passThing = password or self.password 
+        decrypted = self.gpg.decrypt(message=str(theData), passphrase=passThing)
+    
+    if not decrypted.ok:                                                   #Added Error handling
+        raise ValueError(f"Decryption failed: {decrypted.status}")
+    
+    return str(decrypted), decrypted.ok, decrypted.status
+
 
     #May be used later!
     """
